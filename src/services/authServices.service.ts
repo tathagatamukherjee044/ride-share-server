@@ -24,7 +24,7 @@ import { Request, Response } from "express";
             userData['name'] = result[0].name;
             userData['_id'] = result[0]._id;
             userData['phone'] = result[0].phone;
-            var token = await tokenUtils.createToken(result[0]);
+            var token = createToken(userData._id)
             res.json({success : true , msg : "user matched",token : token, userData : userData});
         }else {
             res.json({success : false , msg : "wrong password"});
@@ -42,5 +42,10 @@ import { Request, Response } from "express";
         // res.send(result);
     }
     
+}
+
+export async function createToken(userData : Object){
+    const token = tokenUtils.createToken(userData)
+    return token
 }
 

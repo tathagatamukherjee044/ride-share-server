@@ -1,6 +1,7 @@
 import * as MongoUtils from "../mongo/mongoUtils.utils"
 import {ObjectId } from "mongodb";
 import { Request, Response } from "express";
+import { log } from "console";
 
 export async function putTrip(req : Request, res : Response){
     const body = req.body;
@@ -14,11 +15,16 @@ export async function putTrip(req : Request, res : Response){
    
 }
 
-export async function searchTrip(req : Request, res : Response){
-    const body = req.body;
-    body['isAvailable'] = true;
-    var result = await MongoUtils.getDocuments('trip',body)
-    res.send(result);
+export async function searchTrip(req : any){
+    req['isAvailable'] = true;
+    try{
+        var result = await MongoUtils.getDocuments('gg',req)
+    } catch(error){
+        console.log('error caught in service');
+        throw error
+    }
+   
+    return result
    
 }
 

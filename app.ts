@@ -1,10 +1,10 @@
 import express, { query } from "express";
 import { MongoClient, ObjectId } from "mongodb";
 import cors from "cors";
-//var cors = require('cors')
 import tripRouter from "./src/routes/tripRoutes.route";
 import authRouter from "./src/routes/authRouter.route"
 import testRouter from "./src/routes/testRoutes.route"
+import { errorHandler, errorLogger, invalidPathHandler } from "./src/middlewares/errorHandler.middleware";
 
 const port = 8080;
 const app = express(); // Application of express
@@ -18,6 +18,10 @@ app.use(cors());
 app.use(tripRouter);
 app.use(authRouter);
 app.use(testRouter);
+
+app.use(errorLogger)
+app.use(errorHandler)
+app.use(invalidPathHandler)
 
 app.get('/greeter', (req, res) => {
   // req - Request of express -- we want something from the client

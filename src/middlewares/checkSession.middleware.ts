@@ -11,7 +11,6 @@ export function checkSession(req : Request,res : Response,next : NextFunction){
     }
     try{
         const userInfo = tokenUtils.verifyToken(token as string);
-        body.userInfo = userInfo;
         next();
     }
     catch (err : any){

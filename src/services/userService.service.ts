@@ -2,27 +2,8 @@ import * as MongoUtils from "../mongo/mongoUtils.utils"
 import * as passwordUtils from '../utils/passwordUtils.utils';
 import axios from "axios";
 import { config } from "../store/config";
-import { Request, Response } from "express";
+import { GoogleUserResult, GoogleTokensResult, UserDocument} from "../utils/types";
 
-
-interface GoogleUserResult {
-  id: string;
-  email: string;
-  verified_email: boolean;
-  name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-  locale: string;
-}
-
-interface GoogleTokensResult {
-  access_token: string;
-  expires_in: Number;
-  refresh_token: string;
-  scope: string;
-  id_token: string;
-}
 
 
 export async function createUser(user: any){
@@ -48,27 +29,17 @@ export async function createUser(user: any){
     
 }
 
-export async function createAndUpdateUser(req : Request,res : Response ){
-    const body = req.body;
-    const phone = body?.phone;
-    const password = body?.password;
-    const query = {
-        phone : phone
-    }
-    var result = await MongoUtils.getDocuments('user',query)
-    if(result.length==1){
-        res.json({success : false , msg : "user already exists"})
-    }
-    else {
-        var passwordHash = await passwordUtils.generateHashForPassword(password, (user : any) => {
-            res.json({ success: true, msg: user });
-        });
-        console.log(passwordHash);
-        var user = JSON.parse(JSON.stringify(body));
-        user.password=passwordHash;
-        await MongoUtils.insertDocument('user',user)
-        res.json({success : true , msg : "user created"});
-    }
+export async function createAndUpdateUser(query : Object,updateDoc : Object, options : Object = {upsert: true}){
+  try {      
+    var result = await MongoUtils.updateDocument('user',query,updateDoc,options)
+    return result
+  } catch (error) {
+    console.log('error caought');
+    
+    throw error
+  }
+    
+    
     
 }
 

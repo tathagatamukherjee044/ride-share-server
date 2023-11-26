@@ -1,3 +1,4 @@
+import { log } from 'console';
 import * as authService from '../services/authServices.service'
 import * as userService from '../services/userService.service'
 import { Request,Response } from 'express';
@@ -29,21 +30,29 @@ export async function googleOAuthHandler(req : Request,res : Response){
       return res.status(403).send("Google account is not verified");
     }
 
+    console.log("now to upsert");
+    
     // upsert the user
-    // const user = await findAndUpdateUser(
-    //   {
-    //     email: googleUser.email,
-    //   },
-    //   {
-    //     email: googleUser.email,
-    //     name: googleUser.name,
-    //     picture: googleUser.picture,
-    //   },
-    //   {
-    //     upsert: true,
-    //     new: true,
-    //   }
-    // );
+    const user = await userService.createAndUpdateUser(
+      {
+        email: googleUser.email,
+      },
+      {
+        email: googleUser.email,
+        name: googleUser.name,
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    )
+
+    console.log('user Crated');
+    
+    var token = await authService.createToken(user)
+
+    console.log(token);
+    
 
     // // create a session
     // // create a session
@@ -68,9 +77,10 @@ export async function googleOAuthHandler(req : Request,res : Response){
     // res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
 
     // redirect back to client
-    res.redirect('localhost:4200/');
+    res.json({success : true , msg : "user matched",token : token});
+    // res.redirect('localhost:4200/');
   } catch (error) {
-    // log.error(error, "Failed to authorize Google user");
-    return res.redirect(`localhost:4200//oauth/error`);
+    console.log(error, "Failed to authorize Google user");
+    return res.redirect(`http://localhost:4200/oauth/error`);
   }
 }

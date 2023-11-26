@@ -20,7 +20,7 @@ const authRouter = express.Router();
 
 authRouter.post("/auth/signup", authController.createUser)
 authRouter.post("/auth/login", authController.authenticateUser)
-authRouter.get("/auth/oauth/google", authController.authenticateUser)
+authRouter.get("/auth/oauth/google", authController.googleOAuthHandler)
 
 // authRouter.post("/auth/login", async (req,res)=>{
 //     const body = req.body;
