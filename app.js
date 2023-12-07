@@ -1,15 +1,15 @@
 import express, { query } from "express";
 import { MongoClient, ObjectId } from "mongodb";
 import cors from "cors";
-import tripRouter from "./src/routes/tripRoutes.route";
-import authRouter from "./src/routes/authRouter.route"
-import testRouter from "./src/routes/testRoutes.route"
-import { errorHandler, errorLogger, invalidPathHandler } from "./src/middlewares/errorHandler.middleware";
+import tripRouter from "./src/routes/tripRoutes.js";
+import authRouter from "./src/routes/authRouter.js"
+import testRouter from "./src/routes/testRoutes.js"
+import { errorHandler, errorLogger, invalidPathHandler } from "./src/middlewares/errorHandler.js";
 
 const port = 8080;
 const app = express(); // Application of express
 const dbUrl = 'mongodb://localhost:27017';
-var connection : any;
+var connection ;
 
 //var MongoClient = require('mongodb').MongoClient;
 
@@ -71,7 +71,7 @@ app.post('/test', async(req,res) =>{
   console.log(req.body);
   const collectionName = req.body.collection;
   const id = req.body._id;
-  const query : any = {}
+  const query  = {}
   // query['_id'] = {
   //   $regex : new RegExp(`^${id}$`),
   //   $options : 'i'

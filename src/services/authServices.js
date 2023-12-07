@@ -1,13 +1,13 @@
-import * as MongoUtils from "../mongo/mongoUtils.utils"
-import * as passwordUtils from '../utils/passwordUtils.utils';
-import * as tokenUtils from '../utils/tokenUtils.utils'
+import * as MongoUtils from "../mongo/mongoUtils.js"
+import * as passwordUtils from '../utils/passwordUtils.js';
+import * as tokenUtils from '../utils/tokenUtils.js'
 import axios from "axios";
 import { config } from "../store/config.js";
-import { Request, Response } from "express";
+import { log } from "console";
 
 
 
-  export async function authenticateUser(req : Request,res : Response){
+  export async function authenticateUser(req ,res ){
     const body = req.body;
     const phone = body.phone;
     const password = body.password;
@@ -20,11 +20,13 @@ import { Request, Response } from "express";
         var hashedPassword = result[0].password;
         var match = await passwordUtils.checkHashForPassword(password,hashedPassword);
         if(match){
-            const userData : any = {};
+            const userData  = {};
             userData['name'] = result[0].name;
             userData['_id'] = result[0]._id;
             userData['phone'] = result[0].phone;
-            var token = createToken(userData._id)
+            var token = await createToken(userData._id)
+            console.log(token);
+            
             res.json({success : true , msg : "user matched",token : token, userData : userData});
         }else {
             res.json({success : false , msg : "wrong password"});
@@ -44,7 +46,7 @@ import { Request, Response } from "express";
     
 }
 
-export async function createToken(userData : Object){
+export async function createToken(userData ){
     const token = tokenUtils.createToken(userData)
     return token
 }

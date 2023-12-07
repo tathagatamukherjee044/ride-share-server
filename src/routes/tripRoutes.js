@@ -1,7 +1,7 @@
 import express from 'express';
-import * as tripController from "../controllers/tripController.controller"
-import { checkSession } from '../middlewares/checkSession.middleware';
-import { errorHandler } from '../middlewares/errorHandler.middleware';
+import * as tripController from "../controllers/tripController.js"
+import { checkSession } from '../middlewares/checkSession.js';
+import { errorHandler } from '../middlewares/errorHandler.js';
 
 const tripRouter = express.Router();
 

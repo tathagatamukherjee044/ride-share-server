@@ -1,7 +1,7 @@
-// import * as mongoUtils from '../mongo/mongoUtils.utils'
-// import { verifyJwt, signJwt } from "../utils/jwt.utils";
+// import * as mongoUtils from '../mongo/mongoUtils.js'
+// import { verifyJwt, signJwt } from "../utils/jwt.js";
 
-// export async function createSession(userId: string, userAgent: string) {
+// export async function createSession(userId, userAgent) {
 
 //   const session = await mongoUtils.insertDocument('session',{_id : userId, userAgent})
 //   if(session.insertedId){
@@ -10,19 +10,19 @@
 
 // }
 
-// export async function findSessions(query : Object) {
+// export async function findSessions(query ) {
 
 //   return await mongoUtils.getDocuments('session',query)
 
 // }
 
-// export async function updateSession(query : Object, updateDoc : Object) {
+// export async function updateSession(query , updateDoc ) {
 
 //   return await mongoUtils.updateDocument('session',query, updateDoc);
 
 // }
 
-// export async function reIssueAccessToken(refreshToken : string) {
+// export async function reIssueAccessToken(refreshToken ) {
 //   const { decoded } = verifyJwt(refreshToken);
 
 //   if (!decoded || !get(decoded, "session")) return false;

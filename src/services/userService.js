@@ -1,12 +1,11 @@
-import * as MongoUtils from "../mongo/mongoUtils.utils"
-import * as passwordUtils from '../utils/passwordUtils.utils';
+import * as MongoUtils from "../mongo/mongoUtils.js"
+import * as passwordUtils from '../utils/passwordUtils.js';
 import axios from "axios";
-import { config } from "../store/config";
-import { GoogleUserResult, GoogleTokensResult, UserDocument} from "../utils/types";
+import { config } from "../store/config.js";
 
 
 
-export async function createUser(user: any){
+export async function createUser(user){
     const phone = user.phone;
     const password = user.password;
     const query = {
@@ -17,7 +16,7 @@ export async function createUser(user: any){
         return ({success : false , msg : "user already exists"})
     }
     else {
-        var passwordHash = await passwordUtils.generateHashForPassword(password, (user: any) => {
+        var passwordHash = await passwordUtils.generateHashForPassword(password, (user) => {
             return ({ success: true, msg: user });
         });
         console.log(passwordHash);
@@ -29,7 +28,7 @@ export async function createUser(user: any){
     
 }
 
-export async function createAndUpdateUser(query : Object,updateDoc : Object, options : Object = {upsert: true}){
+export async function createAndUpdateUser(query ,updateDoc , options  = {upsert: true}){
   try {      
     var result = await MongoUtils.updateDocument('user',query,updateDoc,options)
     return result
@@ -43,9 +42,9 @@ export async function createAndUpdateUser(query : Object,updateDoc : Object, opt
     
 }
 
-export async function getGoogleUser(id_token : string , access_token : string): Promise<GoogleUserResult> {
+export async function getGoogleUser(id_token  , access_token ) {
     try {
-      const res = await axios.get<GoogleUserResult>(
+      const res = await axios.get<any>(
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
         {
           headers: {
@@ -54,17 +53,13 @@ export async function getGoogleUser(id_token : string , access_token : string): 
         }
       );
       return res.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error(error, "Error fetching Google user");
       throw new Error(error.message);
     }
 }
 
-export async function getGoogleOAuthTokens({
-  code,
-}: {
-  code: string;
-}): Promise<GoogleTokensResult> {
+export async function getGoogleOAuthTokens({code}) {
   const url = "https://oauth2.googleapis.com/token";
 
   const values = {
@@ -77,7 +72,7 @@ export async function getGoogleOAuthTokens({
 
   try {
     const qs = new URLSearchParams(values)
-    const res = await axios.post<GoogleTokensResult>(
+    const res = await axios.post<any>(
       url,
       qs,
       {
@@ -87,7 +82,7 @@ export async function getGoogleOAuthTokens({
       }
     );
     return res.data;
-  } catch (error: any) {
+  } catch (error) {
     console.error(error.response.data.error);
     console.error(error, "Failed to fetch Google Oauth Tokens");
     throw new Error(error.message);

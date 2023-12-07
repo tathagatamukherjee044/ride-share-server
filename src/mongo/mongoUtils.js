@@ -1,5 +1,3 @@
-import { log } from "console";
-import { ObjectEncodingOptions } from "fs";
 import { MongoClient } from "mongodb";
 
 const dbUrl = 'mongodb://localhost:27017';
@@ -14,7 +12,7 @@ var connection;
 //     return result;
 // }
 
-export async function insertDocument(collectionName : string, updateDoc : any){
+export async function insertDocument(collectionName , updateDoc ){
     const client = new MongoClient(dbUrl)
     try {
         console.log(updateDoc);
@@ -32,7 +30,7 @@ export async function insertDocument(collectionName : string, updateDoc : any){
    
 }
 
-export async function getDocuments(collectionName : string, query : Object){
+export async function getDocuments(collectionName , query ){
 
     const client = new MongoClient(dbUrl)
     try{
@@ -56,7 +54,7 @@ export async function getDocuments(collectionName : string, query : Object){
     
 }
 
-export async function updateDocument(collectionName : string,query : Object,updateDoc : Object, options : Object = {}){
+export async function updateDocument(collectionName ,query ,updateDoc , options  = {}){
     const client = new MongoClient(dbUrl)
     try {
         console.log(query);

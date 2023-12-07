@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction} from "express"
 
-export function sendSuccessResult(res : Response, data : any, req : Request) {
+
+export function sendSuccessResult(res , data , req ) {
     const responseData = {
         code: 200,
         data,
@@ -10,7 +10,7 @@ export function sendSuccessResult(res : Response, data : any, req : Request) {
     return res.status(200).json(responseData)
 }
 
-export function sendInvalidResult (res : Response, data : any, req : Request) {
+export function sendInvalidResult (res , data , req ) {
     const responseData = {
         code: 200,
         message: data.message,

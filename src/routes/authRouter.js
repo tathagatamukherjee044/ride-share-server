@@ -1,6 +1,6 @@
 import express from 'express';
-import * as authController from "../controllers/authController.controller"
-import * as passwordUtils from '../utils/passwordUtils.utils';
+import * as authController from "../controllers/authController.js"
+import * as passwordUtils from '../utils/passwordUtils.js';
 
 const authRouter = express.Router();
 

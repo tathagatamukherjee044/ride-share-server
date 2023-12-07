@@ -1,11 +1,10 @@
-import * as MongoUtils from "../mongo/mongoUtils.utils"
+import * as MongoUtils from "../mongo/mongoUtils.js"
 import {ObjectId } from "mongodb";
-import { Request, Response } from "express";
 import { log } from "console";
 
-export async function putTrip(req : Request, res : Response){
+export async function putTrip(req , res ){
     const body = req.body;
-    const userInfo = body.userInfo;
+    const userInfo = req.userInfo;
     console.log(userInfo);
     body['name'] = userInfo.name
     body['creatorId'] = userInfo._id
@@ -15,10 +14,10 @@ export async function putTrip(req : Request, res : Response){
    
 }
 
-export async function searchTrip(req : any){
+export async function searchTrip(req ){
     req['isAvailable'] = true;
     try{
-        var result = await MongoUtils.getDocuments('gg',req)
+        var result = await MongoUtils.getDocuments('trip',req)
     } catch(error){
         console.log('error caught in service');
         throw error
@@ -28,11 +27,11 @@ export async function searchTrip(req : any){
    
 }
 
-export async function getTrip(req : Request, res : Response){
+export async function getTrip(req , res ){
     console.log(req.body);
     const collectionName = 'trip';
     const _id = req.body._id;
-    const query : any = {}
+    const query  = {}
   // query['_id'] = {
   //   $regex : new RegExp(`^${id}$`),
   //   $options : 'i'
@@ -49,20 +48,20 @@ export async function getTrip(req : Request, res : Response){
     res.send(result);
 }
 
-export async function requestTrip(req : Request, res : Response){
+export async function requestTrip(req , res ){
     const body = req.body;
-    const consumerName = body.userInfo.name;
+    const consumerName = req.userInfo.name;
     const collectionName = 'trip';
-    const consumerId = body.userInfo._id;
+    const consumerId = req.userInfo._id;
     const tripId = req.body._id;
-    const query : any = {}
+    const query  = {}
     query['_id'] = {$in: [ new ObjectId(tripId), tripId ]}
     query['isAvailable'] = true
     const trip = await MongoUtils.getDocuments(collectionName,query)
     if (trip) {
         var updateDoc = { $push: { consumerRequests: {
                 consumerName : consumerName,
-                consumerId : consumerId
+                consumerId : new ObjectId(consumerId)
             } },
             $set: {
                 isAvailable: false
@@ -79,20 +78,26 @@ export async function requestTrip(req : Request, res : Response){
     
 }
 
-export async function getCreatorTrips(req : Request, res : Response){
+export async function getCreatorTrips(req , res ){
     const body = req.body;
-    const userId = body.userInfo._id;
+    const userId = req.userInfo._id;
+    console.log(body);
+    console.log(req);
+    console.log(userId);
+    
     const collectionName = 'trip';
-    const query = { 'creatorId' : userId};
+    const query = { 'creatorId' :  {$in: [ new ObjectId(userId), userId ]}};
+    console.log(query);
+    
     var result = await MongoUtils.getDocuments(collectionName, query);
     res.send(result);
 }
 
-export async function getConsumerTrips(req : Request, res : Response){
+export async function getConsumerTrips(req , res ){
     const body = req.body;
-    const userId = body.userInfo._id;
+    const userId = req.userInfo._id;
     const collectionName = 'trip';
-    const query = { 'consumerRequests.consumerId' : userId};
+    const query = { 'consumerRequests.consumerId' : {$in: [ new ObjectId(userId), userId ]}};
     var result = await MongoUtils.getDocuments(collectionName, query);
     res.send(result);
 }

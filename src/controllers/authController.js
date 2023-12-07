@@ -1,19 +1,19 @@
 import { log } from 'console';
-import * as authService from '../services/authServices.service'
-import * as userService from '../services/userService.service'
-import { Request,Response } from 'express';
+import * as authService from '../services/authServices.js'
+import * as userService from '../services/userService.js'
 
-export function createUser(req : Request,res : Response){
+
+export function createUser(req ,res ){
   const user = req.body
     res.send(userService.createUser(user));
 }
 
-export function authenticateUser(req : Request,res : Response){
+export function authenticateUser(req ,res ){
     authService.authenticateUser(req,res);
 }
 
-export async function googleOAuthHandler(req : Request,res : Response){
-    const code = req.query.code as string
+export async function googleOAuthHandler(req ,res ){
+    const code = req.query.code 
 
   try {
     // get the id and access token with the code
