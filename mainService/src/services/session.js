@@ -18,7 +18,7 @@
 
 // export async function updateSession(query , updateDoc ) {
 
-//   return await mongoUtils.updateDocument('session',query, updateDoc);
+//   return await mongoUtils.findOneAndUpdate('session',query, updateDoc);
 
 // }
 

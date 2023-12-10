@@ -24,10 +24,13 @@ import { log } from "console";
             userData['name'] = result[0].name;
             userData['_id'] = result[0]._id;
             userData['phone'] = result[0].phone;
-            var token = await createToken(userData._id)
-            console.log(token);
+            var token = await createToken(userData)
+            const data = {
+                user: userData,
+                token
+            }
             
-            res.json({success : true , msg : "user matched",token : token, userData : userData});
+            res.json({data,success:true});
         }else {
             res.json({success : false , msg : "wrong password"});
         }

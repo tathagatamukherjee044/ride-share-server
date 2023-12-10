@@ -13,6 +13,8 @@ tripRouter.post("/trip/get",  tripController.getTrip);
 tripRouter.post("/trip/search",  tripController.searchTrip,)
 // request to put dropper/consumer in trip
 tripRouter.post('/trip/request', checkSession, tripController.requestTrip)
+// approve one request from all trip requests
+tripRouter.post('/trip/approve', checkSession, tripController.approveRequest)
 // get all creator trips for a user
 tripRouter.post('/trip/getCreator', checkSession, tripController.getCreatorTrips)
 // get all consumer trips for a user

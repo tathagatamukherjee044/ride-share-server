@@ -1,6 +1,7 @@
 import { log } from 'console';
 import * as authService from '../services/authServices.js'
 import * as userService from '../services/userService.js'
+import { encode } from 'punycode';
 
 
 export function createUser(req ,res ){
@@ -46,39 +47,14 @@ export async function googleOAuthHandler(req ,res ){
         new: true,
       }
     )
-
-    console.log('user Crated');
-    
+    log(user)
     var token = await authService.createToken(user)
-
-    console.log(token);
-    
-
-    // // create a session
-    // // create a session
-    // const session = await createSession(user._id, req.get("user-agent") || "");
-
-    // // create an access token
-
-    // const accessToken = signJwt(
-    //   { ...user.toJSON(), session: session._id },
-    //   { expiresIn: config.get("accessTokenTtl") } // 15 minutes
-    // );
-
-    // // create a refresh token
-    // const refreshToken = signJwt(
-    //   { ...user.toJSON(), session: session._id },
-    //   { expiresIn: config.get("refreshTokenTtl") } // 1 year
-    // );
-
-    // // set cookies
-    // res.cookie("accessToken", accessToken, accessTokenCookieOptions);
-
-    // res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
-
-    // redirect back to client
-    res.json({success : true , msg : "user matched",token : token});
-    // res.redirect('localhost:4200/');
+    const userData = {
+      token : token,
+      user : user
+    }
+    const encodedData = btoa(JSON.stringify(userData))
+    res.redirect(`http://localhost:8100/auth/oauth?data=${encodedData}`);
   } catch (error) {
     console.log(error, "Failed to authorize Google user");
     return res.redirect(`http://localhost:4200/oauth/error`);

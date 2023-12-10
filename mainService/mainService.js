@@ -7,6 +7,8 @@ import testRouter from "./src/routes/testRoutes.js"
 import { errorHandler, errorLogger, invalidPathHandler } from "./src/middlewares/errorHandler.js";
 import { Kafka } from "kafkajs";
 import { config } from "./src/store/config.js";
+import { logger } from "./src/middlewares/logger.js";
+import { decodeToken } from "./src/middlewares/decodeToken.js";
 
 const port = 8080;
 const app = express(); // Application of express
@@ -17,6 +19,8 @@ var connection ;
 
 app.use(express.json())
 app.use(cors());
+// app.use(decodeToken)
+app.use(logger)
 app.use(tripRouter);
 app.use(authRouter);
 app.use(testRouter);

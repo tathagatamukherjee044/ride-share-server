@@ -3,7 +3,7 @@ import { MongoClient } from "mongodb";
 const dbUrl = 'mongodb://localhost:27017';
 var connection;
 
-// export async function updateDocument(collectionName, updateDoc, queryParam, options){
+// export async function findOneAndUpdate(collectionName, updateDoc, queryParam, options){
 //     const client = new MongoClient(dbUrl)
 //     await client.connect();
 //     const database = client.db('bropdevdb')
@@ -41,7 +41,6 @@ export async function getDocuments(collectionName , query ){
         if(result.length == 0){
             throw new Error(`getDocuments failed, collection : ${collectionName}, query : ${JSON.stringify(query)}`)
         }
-        console.log(result);
         return result;
     }
     catch (error){
@@ -54,35 +53,56 @@ export async function getDocuments(collectionName , query ){
     
 }
 
-export async function updateDocument(collectionName ,query ,updateDoc , options  = {}){
+export async function updateOne(collectionName ,query ,updateDoc , options  = {}){
+    const client = new MongoClient(dbUrl)
+    try {
+        await client.connect(); 
+        const database = client.db('bropdevdb')
+        connection = database.collection(collectionName)        
+        var result = await connection.updateOne(query,updateDoc,options)
+        if(result.matchedCount == 0){
+            throw new Error('No document found')
+        }
+        return result
+    } catch (error) {
+        throw error
+    }
+    finally {
+        await client.close();
+    }
+}
+
+export async function findOneAndUpdate(collectionName ,query ,updateDoc , options  = {}){
     const client = new MongoClient(dbUrl)
     try {
         console.log(query);
         const doc = {
             $set: updateDoc
         }
+        await client.connect();       
+        const database = client.db('bropdevdb')
+        connection = database.collection(collectionName)
+        var result = await connection.findOneAndUpdate(query,doc,options)
+        return result
+    } catch (error) {
+        throw error
+    }finally {
+        await client.close();
+    }
+}
+
+export async function getAggregation(collectionName,query){
+    const client = new MongoClient(dbUrl)
+    try {
         await client.connect();
-        console.log('connected');
-        
         const database = client.db('bropdevdb')
         connection = database.collection(collectionName)
         console.log(connection);
-        
-        var result = await connection.updateOne(
-            query,
-            doc,
-            options
-         )
-        console.log(result);
-        
-        if(result.upsertedCount === 1 || result.matchedCount === 1){
-            return result.upsertedId;
-        } else {
-            throw new Error(`updateDocument failed, collection : ${collectionName}, query : ${JSON.stringify(query)}, updateDoc : ${JSON.stringify(updateDoc)} `)
-        }
+        var result = await connection.aggregate(query).toArray()
+        return result
     } catch (error) {
         throw error
+    }finally {
+        await client.close();
     }
-    
-   
 }

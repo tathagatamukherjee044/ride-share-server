@@ -6,17 +6,28 @@ const client = new Kafka({
     clientId: config.kafka.CLIENTID
   })
   
-  const topic = config.kafka.TOPIC
+  //const topic = config.kafka.TOPIC
   
   const producer = client.producer()
 
-  export const sendMessage = async (topic,message) => {
+  export async  function startKafkaProducer() {
     await producer.connect()
+  }
+
+  export const sendMessage = async (topic,message) => {
+    console.log(topic);
+    console.log(message);
+    try {
       const payloads = {
-        topic: topic,
+        topic,
         messages: [message]
       }
       console.log('payloads=', payloads)
       await producer.send(payloads)
       return true;
+    } catch (error) {
+      console.log("some error with kafka");
+      return true
+    }
+   
   }

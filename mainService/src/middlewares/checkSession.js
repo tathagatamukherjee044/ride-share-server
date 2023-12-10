@@ -10,6 +10,7 @@ export function checkSession(req ,res ,next){
     try{
         const userInfo = tokenUtils.verifyToken(token );
         req.userInfo = userInfo
+        console.log(userInfo);
         next();
     }
     catch (err ){

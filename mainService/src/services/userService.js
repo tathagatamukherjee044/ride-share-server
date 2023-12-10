@@ -29,10 +29,11 @@ export async function createUser(user){
     
 }
 
-export async function createAndUpdateUser(query ,updateDoc , options  = {upsert: true}){
+export async function createAndUpdateUser(query ,updateDoc , options  = {upsert: true,returnNewDocument: true}){
   try {      
-    var result = await MongoUtils.updateDocument('user',query,updateDoc,options)
-    return result
+    var result = await MongoUtils.findOneAndUpdate('user',query,updateDoc,options)
+    log(result)
+    return result.value
   } catch (error) {
     console.log('error caought');
     
@@ -45,7 +46,7 @@ export async function createAndUpdateUser(query ,updateDoc , options  = {upsert:
 
 export async function getGoogleUser(id_token  , access_token ) {
     try {
-      const res = await axios.get<any>(
+      const res = await axios.get(
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
         {
           headers: {
@@ -74,8 +75,10 @@ export async function getGoogleOAuthTokens({code}) {
 
   console.log('here');
   try {
+    console.log('here also');
     const qs = new URLSearchParams(values)
-    const res = await axios.post<any>(
+    log(qs)
+    const res = await axios.post(
       url,
       qs,
       {
@@ -85,7 +88,7 @@ export async function getGoogleOAuthTokens({code}) {
       }
     );
     console.log(res);
-    return res.data;
+    return res.data
   } catch (error) {
     console.error(error.response.data.error);
     console.error(error, "Failed to fetch Google Oauth Tokens");
